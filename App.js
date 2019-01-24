@@ -8,7 +8,8 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import Register from './src/services/Register';
+import Register from './src/pages/Register';
+import Login from './src/pages/Login';
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
@@ -20,7 +21,7 @@ type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
-      <Register/>
+      <Login/>
     );
   }
 }
