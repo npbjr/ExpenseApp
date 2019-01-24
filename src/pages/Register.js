@@ -15,68 +15,54 @@ class Register extends Component {
   render() {
     return (
     	<View style={styles.container}>
-          <View style={styles.inputBox}>
-
-            <Input
-              leftIcon={
-                <Icon
-                  name='user'
-
-                  size={20}
-                  color='black'
-                />
-              }
-              style={styles.input1}
+        <View style={styles.titleBox}>
+          <Text style={{fontSize: 50}}>
+            Register
+          </Text>
+        </View>
+        <View style={styles.formBox}>
+          <View style={styles.inputContainer}>
+            <TextInput 
+              style={styles.inputElement}
               placeholder="Name"
-              onChangeText={(username) => this.setState({username})}
+              onChangeText={(username) => this.setState({username})} 
             />
-            <Input
-              leftIcon={{ name: 'email', size: 20, color:'black' }}
-              style={styles.input1}
-              placeholder="Email Address"
-              onChangeText={(email) => this.setState({email})}
-            />
-
-            <Input
-             leftIcon={
-                <Icon
-                  name='lock'
-                  size={20}
-                  color='black'
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.inputElement}
+        
+                  onChangeText={(email) => this.setState({email})}
+                  placeholder="Email"
                 />
-              }
-              style={styles.input1}
-              secureTextEntry={true}
-              placeholder="Password"
-              onChangeText={(password) => this.setState({password})}
-            />
-            <Input
-             leftIcon={
-                <Icon
-                  name='lock'
-                  size={20}
-                  color='black'
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.inputElement}
+        
+                  onChangeText={(password) => this.setState({password})}
+                  placeholder="Password"
                 />
-              }
-              style={styles.input1}
-              secureTextEntry={true}
-              placeholder="Confirm Password"
-              onChangeText={(password) => this.setState({password})}
-            />
-            
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.inputElement}
+        
+                  onChangeText={(confirm_password) => this.setState({confirm_password})}
+                  placeholder="Confirm Password"
+                />
           </View>
           <View style={styles.btnBox}>
             <Button
-                style={{paddingTop: 10}}
-                title="Register"
-                backgroundColor="#841584"
-                onPress={
-                  ()=> {
-                      console.log(this.state)
-                  }
+              buttonStyle={styles.buttonstyle}
+              title="Register"
+              
+              onPress={
+                ()=>{
+                  console.log(this.state)
                 }
-              />
+              }
+            />
           </View>
+        </View>
+          
       </View>
 	    
     );
@@ -86,20 +72,35 @@ class Register extends Component {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
+    backgroundColor: '#F0FFF0',
     justifyContent:  'center' 
+  },
+  formBox:{
+    height: 350,
+    alignItems:  'center',
 
   },
-  inputBox:{
-    alignItems: 'center'
-    
-
+  inputElement:{
+    textAlign:  'center' 
   },
-  input1:{
-    flex: 0,
-    width: 250,
+  buttonstyle:{
+    width: 100,
   },
   btnBox:{
-    marginTop: 10
+    marginTop: 20,
+    alignItems:  'center' 
+  },
+  inputContainer:{
+    marginTop: 10,
+    width: 300,
+    backgroundColor: '#fff',
+      borderRadius: 25,
+      marginBottom: 10,
+
+  },titleBox:{
+    height: 100,
+    alignItems:  'center' 
+    // backgroundColor: 'blue'
   }
   
 
