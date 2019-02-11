@@ -9,11 +9,42 @@ import {
 import {Icon} from 'native-base';
 import Login from '../pages/Login';
 import { ListItem } from 'react-native-elements';
+import AddDialog from '../forms/AddDialog';
+import uuid from 'uuid';
+import {AsyncStorage} from 'react-native';
+const EXPENSE_ITEMS = 'EXPENSE_ITEMS';
+const _retrieveData = async (callback) => {
+  try {
+    const value = await AsyncStorage.getItem(EXPENSE_ITEMS);
+    if (value !== null) {
+      // We have data!!
+      console.log(value);
+      // return JSON.parse(value)
+      callback(JSON.parse(value))
+    }
+  } catch (error) {
+  	callback(false)
+    // Error retrieving data
+  }
+};
+const _storeData = async (items) => {
+  try {
+    await AsyncStorage.setItem(EXPENSE_ITEMS, JSON.stringify(items));
+  } catch (error) {
+    // Error saving data
+  }
+};
+	
 
 class Home extends Component {
-	state = {
-		dataSource:this.props.list
-	};
+	constructor(props) {
+		super(props);
+		this.state = {isDialogVisible:false,list:[]}
+		_retrieveData((data)=>{
+			this.setState({list:data})
+		})
+	}
+
 	static navigationOptions = {
 		tabBarIcon:({tintColor}) =>(
 			<Icon name="home" style={{color:tintColor}}></Icon>
@@ -21,34 +52,94 @@ class Home extends Component {
 	}
 
 	// let item_list = [{'item':'shampoo','store':'threesixty'},{'item':'kojic','store':'threesixty'},{'item':'keratinGOLD','store':'threesixty'}];
-
+	deleteItem = (id) =>{
+		console.log("delete item")
+		console.log("id number:"+id)
+		let mlist = [...this.state.list.filter(list=>list.id !== id)]
+		this.setState({list:mlist})
+		_storeData(mlist)
+		console.log("this state")
+		console.log(this.state.list)
+		_retrieveData((data)=>{
+			console.log("this data")
+			console.log(data)
+		})
+	}
 	keyExtractor = (item, index) => index.toString()
 	renderItem = ({ item }) => (
 		  <ListItem
 		  	containerStyle={styles.list_style}
 		    title={item.name}
-		    subtitle={item.subtitle}
+		    subtitle={
+		    	<View>
+		    		<Text>{item.subtitle}</Text>
+		    		<Text>{item.date}</Text>
+		    	</View>
+		    }
+		    // onPressRightIcon={this.deleteItem}
 		    rightSubtitle={item.price + ' php'}
-		    rightIcon={{ name: 'edit' }}
+		    rightIcon={<Icon type="AntDesign" name="delete" onPress={()=> this.deleteItem(item.id)}></Icon>}
 		    // rightAvatar={{ source: { uri: item.avatar_url } }}
 		  />
+
 		)
-	
-
+	getTotal = (data)=>{
+		let total = 0;
+		console.log("first"),
+		console.log(data)
+		if(data.length>0){
+			data.forEach((value)=>{
+				console.log(value)
+				var n = parseInt(value.price)
+				total+=n;
+			});
+			console.log("getTOtal")
+			console.log(data);
+			console.log("getTotal")
+		}
+		return total;
+	}
+	openDialog = ()=>{
+		this.setState({isDialogVisible:true})
+		console.log(this.state)
+	}
+	myItems = (data)=>{
+		console.log("myItems")
+		console.log(data)
+		var raw = {
+			'id':uuid.v4(),
+			'date':new Date().toLocaleDateString()+ " "+ new Date().toLocaleTimeString(),
+			'name':data.item,
+			'subtitle':data.store,
+			'price':data.value
+		}
+		console.log("raw")
+		console.log(raw)
+		console.log(this.state.list.length)
+		if(this.state.list){
+			let mlist = [...this.state.list, raw]
+			this.setState({list:mlist})
+			_storeData(mlist)
+			console.log("updated")
+			console.log(this.state.list)
+		}
+		else{
+			this.setState({list:raw})
+			_storeData([raw])
+		}
+		console.log(this.state.list)
+		this.setState({isDialogVisible:false})
+	}
 	render() {
-		return (
+		return ( 
 
-		  <View style={styles.container}>
+		 <View style={styles.container}>
+		  	<AddDialog isVisible={this.state.isDialogVisible} dialogData={this.myItems}/>
 		  	<View style={styles.body}>
-		  		
 		      	<View style={styles.top_menu}>
-		      		<Text style={{fontSize: 20,textAlign:  'center' }}>Imong mga Gastos Karong Adlawa</Text>
+		      		<Text style={{fontSize: 20,textAlign:  'center' }}>Your Daily Expenses</Text>
 		      		<View style={styles.add_expense_btn}>
-			      		<Button onPress={
-				      				()=>{
-				      					console.log("button pressed")
-				      				}
-				      			}
+			      		<Button onPress={()=>this.openDialog()}
 			      			title="Add"
 			      		/>
 		      		</View>
@@ -58,12 +149,19 @@ class Home extends Component {
 		      	<ScrollView>
 			      	<FlatList
 				      keyExtractor={this.keyExtractor}
-				      data={this.state.dataSource}
+				      data={this.state.list}
 				      renderItem={this.renderItem}
 				    />
 				    <View>
 				    	
-				    	<Text style={{textAlign:  'right',fontSize: 20 }}> Total : 237pesos</Text>
+				    	<Text style={{textAlign:  'right',fontSize: 20 }}> Total : 
+
+					    	{
+					    		this.getTotal(this.state.list)					
+							}
+							pesos
+
+						</Text>
 				    </View>
 				</ScrollView>
 		      	</View>
@@ -73,51 +171,8 @@ class Home extends Component {
 		);
   	}
 }
-Home.defaultProps = {
-  list: [
-	  {
-	    name: 'Bugas',
-	    subtitle: 'tindahan kilid sa CUT',
-	    price:'102'
-	  },
-	  {
-	    name: 'shampoo',
-	    subtitle: '3sixty',
-	    price:'6'
-	  },
-	  {
-	    name: 'downy',
-	    subtitle: '3sixty',
-	    price:'7'
-	  },
-	  {
-	    name: 'safeguard',
-	    subtitle: '3sixty',
-	    price:'18'
-	  },
-	  {
-	    name: 'kojic',
-	    subtitle: '3sixty',
-	    price:'23'
-	  },
-	  {
-	    name: 'orange',
-	    subtitle: 'colonade',
-	    price:'10'
-	  },
-	  {
-	    name: 'slice bread',
-	    subtitle: 'mang tinapay',
-	    price:'38'
-	  },
-	  {
-	    name: 'load',
-	    subtitle: '3sixty',
-	    price:'33'
-	  }
-	]
-}
 const styles = StyleSheet.create({
+	
 	add_expense_btn:{
 		width: 100,
 		justifyContent:  'center',
