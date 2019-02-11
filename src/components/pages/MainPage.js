@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import {createBottomTabNavigator,createAppContainer } from 'react-navigation'
 
-import CalendarTab from '../AppTabNavigator/Calendar'
-import ChartTab from '../AppTabNavigator/Chart'
+import CalendarTab from '../AppTabNavigator/Calendar_nav'
+import ChartTab from '../AppTabNavigator/Chart_nav'
 import HomeTab from '../AppTabNavigator/Home'
 import uuid from 'uuid'
 import {AsyncStorage} from 'react-native';

@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		flexDirection:  'column', 
 		alignSelf: 'stretch', 
-		backgroundColor: '#F5F5DC',
+		backgroundColor: 'white',
 		marginTop: 5,
 		marginBottom: 5,
 		marginRight: 5,

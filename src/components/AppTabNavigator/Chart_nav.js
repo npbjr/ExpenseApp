@@ -7,7 +7,7 @@ import {
   View,Text
 } from 'react-native';
 import {Icon} from 'native-base';
-class Chart extends Component {
+class Chart_nav extends Component {
 	static navigationOptions = {
 		tabBarIcon:({tintColor}) =>(
 			<Icon type="AntDesign" name="linechart" style={{color:tintColor}}></Icon>
@@ -31,4 +31,4 @@ container:{
 });
 
 
-export default Chart;
+export default Chart_nav;
