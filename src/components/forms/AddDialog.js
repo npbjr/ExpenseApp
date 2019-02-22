@@ -7,12 +7,15 @@ import {
   View,
 } from 'react-native';
 import Dialog from "react-native-dialog";
+var date = new Date();
+date.setMonth(2);
+const CURRENT_DATE = date.getFullYear()+"-"+date.getMonth().toLocaleString('en-US', {minimumIntegerDigits: 2})+"-"+date.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2});
 class AddDialog extends Component {
 	state = {
 		item:"",
 		value:"",
 		store:"",
-		date: new Date().toLocaleDateString()+ " "+ new Date().toLocaleTimeString(),
+		date: CURRENT_DATE+ " "+ new Date().toLocaleTimeString(),
 		isVisible: (this.props.isVisible == true) ? true : false
 	}
 	handleSubmit = (data) =>{

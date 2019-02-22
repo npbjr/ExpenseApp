@@ -11,36 +11,42 @@ import Login from '../pages/Login';
 import { ListItem } from 'react-native-elements';
 import AddDialog from '../forms/AddDialog';
 import uuid from 'uuid';
-import {AsyncStorage} from 'react-native';
+import Api from '../../services/Api';
+
+// import {AsyncStorage} from 'react-native';
+var date = new Date();
+date.setMonth(2);
+const CURRENT_DATE = date.getFullYear()+"-"+date.getMonth().toLocaleString('en-US', {minimumIntegerDigits: 2})+"-"+date.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2});
 const EXPENSE_ITEMS = 'EXPENSE_ITEMS';
-const _retrieveData = async (callback) => {
-  try {
-    const value = await AsyncStorage.getItem(EXPENSE_ITEMS);
-    if (value !== null) {
-      // We have data!!
-      console.log(value);
-      // return JSON.parse(value)
-      callback(JSON.parse(value))
-    }
-  } catch (error) {
-  	callback(false)
-    // Error retrieving data
-  }
-};
-const _storeData = async (items) => {
-  try {
-    await AsyncStorage.setItem(EXPENSE_ITEMS, JSON.stringify(items));
-  } catch (error) {
-    // Error saving data
-  }
-};
+// const _retrieveData = async (callback) => {
+//   try {
+//     const value = await AsyncStorage.getItem(EXPENSE_ITEMS);
+//     if (value !== null) {
+//       // We have data!!
+//       console.log(value);
+//       // return JSON.parse(value)
+//       callback(JSON.parse(value))
+//     }
+//   } catch (error) {
+//   	callback(false)
+//     // Error retrieving data
+//   }
+// };
+// const _storeData = async (items) => {
+//   try {
+//     await AsyncStorage.setItem(EXPENSE_ITEMS, JSON.stringify(items));
+//   } catch (error) {
+//     // Error saving data
+//   }
+// };
 	
+const app_api = new Api(EXPENSE_ITEMS);
 
 class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {isDialogVisible:false,list:[]}
-		_retrieveData((data)=>{
+		app_api.getAllData((data)=>{
 			this.setState({list:data})
 		})
 	}
@@ -57,10 +63,10 @@ class Home extends Component {
 		console.log("id number:"+id)
 		let mlist = [...this.state.list.filter(list=>list.id !== id)]
 		this.setState({list:mlist})
-		_storeData(mlist)
+		app_api.setData(mlist)
 		console.log("this state")
 		console.log(this.state.list)
-		_retrieveData((data)=>{
+		app_api.getAllData((data)=>{
 			console.log("this data")
 			console.log(data)
 		})
@@ -108,7 +114,7 @@ class Home extends Component {
 		console.log(data)
 		var raw = {
 			'id':uuid.v4(),
-			'date':new Date().toLocaleDateString()+ " "+ new Date().toLocaleTimeString(),
+			'date':CURRENT_DATE+ " "+ new Date().toLocaleTimeString(),
 			'name':data.item,
 			'subtitle':data.store,
 			'price':data.value
@@ -119,13 +125,13 @@ class Home extends Component {
 		if(this.state.list){
 			let mlist = [...this.state.list, raw]
 			this.setState({list:mlist})
-			_storeData(mlist)
+			app_api.setData(mlist)
 			console.log("updated")
 			console.log(this.state.list)
 		}
 		else{
 			this.setState({list:raw})
-			_storeData([raw])
+			app_api.setData([raw])
 		}
 		console.log(this.state.list)
 		this.setState({isDialogVisible:false})
