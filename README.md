@@ -1,3 +1,3 @@
 # ExpenseApp
 
-THIS IS MY FIRST REACT NATIVE APP, w T h where did my money goes
+this app is not helping, still no savings
